@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield · Phishing Awareness Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #1f2937;
+            --bg-card-hover: #374151;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --accent-green: #10b981;
+            --accent-green-dim: rgba(16, 185, 129, 0.2);
+            --accent-red: #ef4444;
+            --accent-red-dim: rgba(239, 68, 68, 0.2);
+            --accent-yellow: #f59e0b;
+            --accent-yellow-dim: rgba(245, 158, 11, 0.2);
+            --accent-blue: #3b82f6;
+            --accent-blue-dim: rgba(59, 130, 246, 0.2);
+            --accent-purple: #8b5cf6;
+            --border-color: #374151;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-glow-green: 0 0 20px rgba(16, 185, 129, 0.3);
+            --shadow-glow-red: 0 0 20px rgba(239, 68, 68, 0.3);
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh
+        }
+
+        .progress-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-primary);
+            padding: 12px 0;
+            margin-bottom: 20px
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-card);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 8px
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+            border-radius: 999px;
+            transition: width 0.4s ease;
+            width: 0%
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--text-secondary)
+        }
+
+        .progress-info .question-counter {
+            font-weight: 600;
+            color: var(--text-primary)
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s ease
+        }
+
+        .screen.active {
+            display: block
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1)
+            }
+
+            50% {
+                transform: scale(1.05)
+            }
+        }
+
+        .start-screen {
+            text-align: center;
+            padding: 20px 0 40px
+        }
+
+        .logo-container {
+            margin-bottom: 24px
+        }
+
+        .logo-img {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            animation: pulse 3s infinite ease-in-out;
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+            object-fit: cover
+        }
+
+        .start-screen h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px
+        }
+
+        .start-screen .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            margin-bottom: 24px;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        .stats-badge {
+            display: inline-block;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+            font-weight: 600;
+            margin-bottom: 28px
+        }
+
+        .features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 32px;
+            text-align: left
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color)
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.2rem
+        }
+
+        .feature-icon.blue {
+            background: var(--accent-blue-dim)
+        }
+
+        .feature-icon.green {
+            background: var(--accent-green-dim)
+        }
+
+        .feature-icon.purple {
+            background: var(--accent-purple);
+            color: white
+        }
+
+        .feature-icon.yellow {
+            background: var(--accent-yellow-dim)
+        }
+
+        .feature-text h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 2px
+        }
+
+        .feature-text p {
+            font-size: 0.8rem;
+            color: var(--text-muted)
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            width: 100%
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3)
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4)
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important
+        }
+
+        .quiz-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            margin-bottom: 20px
+        }
+
+        .scenario-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+
+        .scenario-title .badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px
+        }
+
+        .badge-email {
+            background: var(--accent-blue-dim);
+            color: var(--accent-blue)
+        }
+
+        .badge-sms {
+            background: var(--accent-purple);
+            color: white
+        }
+
+        .badge-web {
+            background: var(--accent-yellow-dim);
+            color: var(--accent-yellow)
+        }
+
+        .simulation-box {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            margin-bottom: 20px
+        }
+
+        .email-simulation {
+            background: #fff;
+            color: #1a1a1a
+        }
+
+        .email-header {
+            background: #f3f4f6;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb
+        }
+
+        .email-header-row {
+            display: flex;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            flex-wrap: wrap
+        }
+
+        .email-header-row:last-child {
+            margin-bottom: 0
+        }
+
+        .email-label {
+            color: #6b7280;
+            min-width: 50px;
+            font-weight: 500
+        }
+
+        .email-value {
+            color: #1a1a1a;
+            word-break: break-all
+        }
+
+        .email-body {
+            padding: 16px;
+            font-size: 0.9rem;
+            line-height: 1.7
+        }
+
+        .email-body .link-suspicious {
+            color: #2563eb;
+            text-decoration: underline;
+            word-break: break-all
+        }
+
+        .sms-simulation {
+            background: linear-gradient(135deg, #dcfce7, #d1fae5);
+            padding: 16px
+        }
+
+        .sms-bubble {
+            background: white;
+            border-radius: 16px 16px 4px 16px;
+            padding: 12px 16px;
+            max-width: 90%;
+            margin: 0 auto;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #1a1a1a
+        }
+
+        .sms-sender {
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between
+        }
+
+        .sms-link {
+            color: #2563eb;
+            text-decoration: underline;
+            word-break: break-all
+        }
+
+        .web-simulation {
+            background: #fff;
+            color: #1a1a1a;
+            padding: 20px
+        }
+
+        .web-simulation .fake-browser-bar {
+            background: #e5e7eb;
+            border-radius: 8px 8px 0 0;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: #4b5563
+        }
+
+        .web-simulation .fake-browser-bar .url {
+            background: white;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: #1f2937;
+            flex: 1;
+            border: 1px solid #d1d5db;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .web-simulation .web-content {
+            border: 1px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            padding: 20px
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .option-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative
+        }
+
+        .option-card:hover:not(.selected):not(.correct):not(.incorrect) {
+            border-color: var(--accent-blue);
+            background: var(--bg-card)
+        }
+
+        .option-card.selected {
+            border-color: var(--accent-blue);
+            background: var(--accent-blue-dim)
+        }
+
+        .option-card.correct {
+            border-color: var(--accent-green);
+            background: var(--accent-green-dim)
+        }
+
+        .option-card.incorrect {
+            border-color: var(--accent-red);
+            background: var(--accent-red-dim)
+        }
+
+        .option-card.disabled {
+            cursor: default;
+            pointer-events: none;
+            opacity: 0.7
+        }
+
+        .option-radio {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            margin-top: 2px
+        }
+
+        .option-card.selected .option-radio {
+            border-color: var(--accent-blue);
+            background: var(--accent-blue)
+        }
+
+        .option-card.selected .option-radio::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%
+        }
+
+        .option-card.correct .option-radio {
+            border-color: var(--accent-green);
+            background: var(--accent-green)
+        }
+
+        .option-card.correct .option-radio::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            font-weight: bold
+        }
+
+        .option-card.incorrect .option-radio {
+            border-color: var(--accent-red);
+            background: var(--accent-red)
+        }
+
+        .option-card.incorrect .option-radio::after {
+            content: '✗';
+            color: white;
+            font-size: 12px;
+            font-weight: bold
+        }
+
+        .option-letter {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            min-width: 20px
+        }
+
+        .option-card.selected .option-letter,
+        .option-card.correct .option-letter,
+        .option-card.incorrect .option-letter {
+            color: var(--text-primary)
+        }
+
+        .option-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            flex: 1
+        }
+
+        .explanation-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            animation: slideIn 0.4s ease
+        }
+
+        .explanation-box.correct {
+            background: var(--accent-green-dim);
+            border: 1px solid var(--accent-green)
+        }
+
+        .explanation-box.incorrect {
+            background: var(--accent-red-dim);
+            border: 1px solid var(--accent-red)
+        }
+
+        .explanation-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 10px
+        }
+
+        .explanation-box.correct .explanation-header {
+            color: var(--accent-green)
+        }
+
+        .explanation-box.incorrect .explanation-header {
+            color: var(--accent-red)
+        }
+
+        .explanation-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6
+        }
+
+        .explanation-text strong {
+            color: var(--text-primary)
+        }
+
+        .results-screen {
+            text-align: center;
+            padding: 20px 0 40px
+        }
+
+        .results-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 32px 24px;
+            margin-bottom: 24px
+        }
+
+        .risk-avatar {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem
+        }
+
+        .risk-avatar.shield {
+            background: var(--accent-green-dim);
+            border: 3px solid var(--accent-green);
+            box-shadow: var(--shadow-glow-green)
+        }
+
+        .risk-avatar.vulnerable {
+            background: var(--accent-yellow-dim);
+            border: 3px solid var(--accent-yellow)
+        }
+
+        .risk-avatar.high-risk {
+            background: var(--accent-red-dim);
+            border: 3px solid var(--accent-red);
+            box-shadow: var(--shadow-glow-red)
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 24px;
+            position: relative
+        }
+
+        .score-circle svg {
+            transform: rotate(-90deg)
+        }
+
+        .score-circle-bg {
+            fill: none;
+            stroke: var(--bg-secondary);
+            stroke-width: 8
+        }
+
+        .score-circle-fill {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease
+        }
+
+        .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center
+        }
+
+        .score-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1
+        }
+
+        .score-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px
+        }
+
+        .risk-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 8px
+        }
+
+        .risk-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 460px;
+            margin: 0 auto 24px;
+            line-height: 1.6
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 24px
+        }
+
+        .stat-item {
+            background: var(--bg-secondary);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color)
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 4px
+        }
+
+        .stat-value.green {
+            color: var(--accent-green)
+        }
+
+        .stat-value.red {
+            color: var(--accent-red)
+        }
+
+        .stat-value.blue {
+            color: var(--accent-blue)
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px
+        }
+
+        .recommendations {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: left
+        }
+
+        .recommendations h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .recommendations ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .recommendations li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--text-secondary)
+        }
+
+        .recommendations li .check-icon {
+            color: var(--accent-green);
+            flex-shrink: 0;
+            margin-top: 2px
+        }
+
+        @media (max-width:640px) {
+            .app-container {
+                padding: 16px
+            }
+
+            .start-screen h1 {
+                font-size: 1.75rem
+            }
+
+            .quiz-card {
+                padding: 18px
+            }
+
+            .stats-grid {
+                gap: 8px
+            }
+
+            .stat-item {
+                padding: 12px 8px
+            }
+
+            .stat-value {
+                font-size: 1.25rem
+            }
+
+            .option-text {
+                font-size: 0.9rem
+            }
+        }
+
+        .hidden {
+            display: none !important
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="progress-sticky" id="progressBar" style="display:none">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-info"><span class="question-counter" id="questionCounter">Question 1 of 100</span><span
+                    class="score-tracker"><span id="scoreDisplay">0/0</span></span></div>
+        </div>
+
+        <div class="screen active" id="startScreen">
+            <div class="start-screen">
+                <div class="logo-container"><img
+                        src="https://image.qwenlm.ai/public_source/5e22920f-1bb5-4946-b879-6c4919557d52/1ec4172e8-14fb-4257-b13b-c0f25feb7186.png"
+                        alt="CyberShield Logo" class="logo-img"></div>
+                <h1>Phishing Shield</h1>
+                <p class="subtitle">Master real-world phishing detection. 100 scenarios covering emails, SMS, OTP theft,
+                    pharming, angler phishing, page hijacking & more.</p>
+                <div class="stats-badge">📊 100 real‑world scenarios · updated 2025</div>
+                <div class="features-list">
+                    <div class="feature-item">
+                        <div class="feature-icon blue">📧</div>
+                        <div class="feature-text">
+                            <h3>Emails, SMS, OTP & Web</h3>
+                            <p>Realistic simulations of phishing attacks</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon green">📊</div>
+                        <div class="feature-text">
+                            <h3>Risk Assessment</h3>
+                            <p>Personalized security score & tips</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon purple">🎓</div>
+                        <div class="feature-text">
+                            <h3>Instant Learning</h3>
+                            <p>Detailed explanations for every scenario</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon yellow">🌍</div>
+                        <div class="feature-text">
+                            <h3>Worldwide Phishing Cases</h3>
+                            <p>Based on real attacks (Google, PayPal, banks, NADRA, etc.)</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="startBtn"><span>🛡️</span> Start 100‑Question Assessment</button>
+            </div>
+        </div>
+
+        <div class="screen" id="quizScreen">
+            <div class="quiz-card" id="questionCard">
+                <div class="scenario-title" id="scenarioTitle"><span id="titleText">Scenario</span><span
+                        class="badge badge-email" id="typeBadge">EMAIL</span></div>
+                <div class="simulation-box" id="simulationBox"></div>
+                <div class="options-container" id="optionsContainer"></div>
+                <div class="explanation-box hidden" id="explanationBox">
+                    <div class="explanation-header" id="explanationHeader"><span id="explanationIcon"></span><span
+                            id="explanationTitle"></span></div>
+                    <div class="explanation-text" id="explanationText"></div>
+                </div>
+            </div>
+            <button class="btn btn-primary hidden" id="submitBtn">Submit Answer</button>
+            <button class="btn btn-primary hidden" id="nextBtn">Next Question →</button>
+        </div>
+
+        <div class="screen" id="resultsScreen">
+            <div class="results-screen">
+                <div class="results-card">
+                    <div class="risk-avatar" id="riskAvatar"><span id="avatarIcon">🛡️</span></div>
+                    <div class="score-circle">
+                        <svg width="140" height="140" viewBox="0 0 140 140">
+                            <circle class="score-circle-bg" cx="70" cy="70" r="60" />
+                            <circle class="score-circle-fill" id="scoreCircle" cx="70" cy="70" r="60"
+                                stroke-dasharray="377" stroke-dashoffset="377" />
+                        </svg>
+                        <div class="score-text">
+                            <div class="score-number" id="finalScore">0%</div>
+                            <div class="score-label">Accuracy</div>
+                        </div>
+                    </div>
+                    <div class="risk-title" id="riskTitle">Cyber-Shield</div>
+                    <div class="risk-description" id="riskDescription"></div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value green" id="statCorrect">0</div>
+                            <div class="stat-label">Correct</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value red" id="statIncorrect">0</div>
+                            <div class="stat-label">Incorrect</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value blue" id="statTotal">0</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="recommendations">
+                    <h3>💡 Security Tips</h3>
+                    <ul id="tipsList"></ul>
+                </div>
+                <button class="btn btn-primary" id="restartBtn">🔄 Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const emailSim = (from, to, subj, body, subjColor) => `<div class="email-simulation"><div class="email-header"><div class="email-header-row"><span class="email-label">From:</span><span class="email-value">${from}</span></div><div class="email-header-row"><span class="email-label">To:</span><span class="email-value">${to}</span></div><div class="email-header-row"><span class="email-label">Subject:</span><span class="email-value" style="color:${subjColor || '#1a1a1a'};font-weight:600">${subj}</span></div></div><div class="email-body">${body}</div></div>`;
+        const smsSim = (sender, time, msg) => `<div class="sms-simulation"><div class="sms-sender"><span>${sender}</span><span>${time}</span></div><div class="sms-bubble">${msg}</div></div>`;
+        const webSim = (url, content) => `<div class="web-simulation"><div class="fake-browser-bar"><span>🔒</span><span class="url">${url}</span></div><div class="web-content">${content}</div></div>`;
+
+        const QUESTION_BANK = [
+            {
+                id: 1, type: "EMAIL", title: "The Urgent Bank Alert", simulationHTML: emailSim("security@hab1b-bank-alert.com", "customer@email.com", "⚠️ URGENT: Your Account Has Been Compromised", `<p>Dear Valued Customer,</p><p style="margin-top:10px">We have detected <strong>unusual activity</strong> on your HBL Account. For your security, we have temporarily restricted access.</p><p style="margin-top:10px">Please verify your identity immediately:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://hbl-secure-verify.com/account/login?ref=urgent</a></p><p style="margin-top:16px;font-size:0.85rem;color:#6b7280">Failure to verify within 24 hours will result in permanent suspension.</p><p style="margin-top:16px;font-size:0.85rem;color:#6b7280">Regards,<br>HBL Security Department</p>`, "#dc2626"),
+                options: ["Phishing - Sender domain is suspicious and urgency tactic used", "Legitimate - HBL does send security alerts", "Legitimate - The email looks professional", "Phishing - But the link is probably safe to click"], correctIndex: 0,
+                explanation: "Phishing. Sender domain <strong>hab1b-bank-alert.com</strong> uses a fake domain ('1' instead of 'l'). Banks never ask you to click links for verification. Urgency is a social engineering tactic."
+            },
+            {
+                id: 2, type: "SMS", title: "JazzCash Prize Notification", simulationHTML: smsSim("JAZZCASH", "2:45 PM", `🎉 Congratulations! You have won Rs. 50,000 in JazzCash Mega Lucky Draw. To claim your prize, send your CNIC number & account PIN to <strong>7745</strong> or visit: <span class="sms-link">jazzcash-rewards.pk/claim</span>. Valid for 2 hours only!`),
+                options: ["Legitimate - JazzCash does run lucky draws", "Phishing - Real companies never ask for PIN via SMS", "Legitimate - The sender shows JAZZCASH", "Phishing - But I should call the number to verify"], correctIndex: 1,
+                explanation: "SMS phishing (smishing). Legitimate organizations NEVER ask for PIN, password, or CNIC via SMS. URL <em>jazzcash-rewards.pk</em> is not official (jazzcash.com.pk). 2-hour limit creates false urgency."
+            },
+            {
+                id: 3, type: "EMAIL", title: "FBR Tax Refund Notification", simulationHTML: emailSim("refund@fbr.gov.pk", "taxpayer@email.com", "Tax Refund of Rs. 25,450 Awaiting Release", `<p>Dear Taxpayer,</p><p style="margin-top:10px">Your income tax refund of <strong>Rs. 25,450</strong> has been approved. Please confirm your bank details:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://fbr-tax-refund.com/verify</a></p><p style="margin-top:16px;font-size:0.85rem;color:#6b7280">You must provide bank account number, CNIC, and mobile for verification.</p><p style="margin-top:16px;font-size:0.85rem;color:#6b7280">Federal Board of Revenue</p>`),
+                options: ["Legitimate - The email is from fbr.gov.pk", "Legitimate - The refund amount is specific", "Phishing - FBR never asks for bank details via email link", "Phishing - But I should provide details to get the refund"], correctIndex: 2,
+                explanation: "Phishing. FBR processes refunds automatically. They never ask you to confirm bank details via email links. Check refund status on the official FBR Iris portal."
+            },
+            {
+                id: 4, type: "SMS", title: "HBL OTP Verification Request", simulationHTML: smsSim("HBL", "11:02 AM", `Dear Customer, your HBL account is temporarily blocked. To reactivate, share the OTP sent to your mobile with our representative at 0300-1234567. Do not share with anyone else. — HBL Helpline`),
+                options: ["Legitimate - HBL asks for OTP to verify identity", "Legitimate - Sender is HBL and message looks official", "Phishing - But I should share OTP if account is blocked", "Phishing - Banks never ask you to share OTP with anyone"], correctIndex: 3,
+                explanation: "SMS phishing. Banks never ask you to share OTP, PIN, or password. Sharing OTP gives fraudsters access to your account."
+            },
+            {
+                id: 5, type: "EMAIL", title: "Netflix Payment Failed", simulationHTML: emailSim("billing@netfIix-payments.com", "user@email.com", "Your payment was declined - Update now", `<p>Hi,</p><p style="margin-top:10px">We were unable to process your last payment. Your account will be suspended in 48 hours.</p><p style="margin-top:10px">Update payment here: <a href="#" class="link-suspicious">https://netfIix-payments.com/update</a></p><p style="margin-top:16px;font-size:0.85rem;color:#6b7280">Netflix Team</p>`),
+                options: ["Phishing - Domain uses uppercase 'I' instead of lowercase 'l'", "Legitimate - Netflix sends payment reminders", "Legitimate - 48-hour window is standard", "Phishing - But updating payment is safe"], correctIndex: 0,
+                explanation: "Phishing. The domain <strong>netfIix-payments.com</strong> uses a capital 'I' to mimic 'l'. Netflix uses netflix.com. Typosquatting + urgency = phishing."
+            },
+            {
+                id: 6, type: "SMS", title: "Pakistan Post Parcel Held", simulationHTML: smsSim("+92 300 1234567", "3:20 PM", `Pakistan Post: Your parcel is held at customs. Pay Rs. 350 clearance fee at <span class="sms-link">pak-post-clearance.com/pay</span> within 12 hours or parcel will be returned.`),
+                options: ["Legitimate - Customs do charge clearance fees", "Phishing - Random personal number, unofficial domain, short deadline", "Legitimate - Pakistan Post uses SMS notifications", "Phishing - But Rs. 350 is a small amount so it's fine"], correctIndex: 1,
+                explanation: "Phishing. Pakistan Post uses official short codes, not random personal mobile numbers. Domain <em>pak-post-clearance.com</em> is not official (pakpost.gov.pk). Short deadlines create panic."
+            },
+            {
+                id: 7, type: "EMAIL", title: "Google Account Recovery", simulationHTML: emailSim("no-reply@google-security-alert.net", "you@gmail.com", "New sign-in on Windows device", `<p>We noticed a new sign-in to your Google Account on a Windows device.</p><p style="margin-top:10px">If this wasn't you, secure your account now: <a href="#" class="link-suspicious">https://google-security-alert.net/recover</a></p><p style="margin-top:16px;font-size:0.85rem;color:#6b7280">Google Security Team</p>`, "#dc2626"),
+                options: ["Legitimate - Google sends sign-in alerts", "Legitimate - Email mentions Windows device", "Phishing - Google uses google.com domains, not google-security-alert.net", "Phishing - But I should log in through the link"], correctIndex: 2,
+                explanation: "Phishing. Google sends alerts from accounts.google.com or no-reply@accounts.google.com. Any link prompting login on a non-Google domain is phishing."
+            },
+            {
+                id: 8, type: "WEB", title: "Fake PayPal Login Page", simulationHTML: webSim("https://paypaI-secure-login.com/signin", `<h2 style="color:#003087">PayPal</h2><p style="margin:15px 0">Sign in to your account</p><input placeholder="Email" style="padding:8px;width:100%;margin-bottom:10px;border:1px solid #ccc;border-radius:4px"><input placeholder="Password" type="password" style="padding:8px;width:100%;margin-bottom:10px;border:1px solid #ccc;border-radius:4px"><button style="background:#0070ba;color:white;padding:10px 20px;border:none;border-radius:20px">Log In</button>`),
+                options: ["Legitimate - PayPal login page", "Legitimate - It has PayPal branding", "Phishing - But I can enter my credentials to check", "Phishing - URL 'paypaI-secure-login.com' is not paypal.com"], correctIndex: 3,
+                explanation: "Phishing. The URL <strong>paypaI-secure-login.com</strong> uses capital 'I' instead of 'l'. Real PayPal is paypal.com. Never enter credentials on a non-official domain."
+            },
+            {
+                id: 9, type: "EMAIL", title: "Microsoft 365 Password Expiry", simulationHTML: emailSim("admin@microsoft-0ffice365.com", "employee@company.com", "Your password expires today", `<p>Your Microsoft 365 password will expire today.</p><p style="margin-top:10px">Keep the same password: <a href="#" class="link-suspicious">https://microsoft-0ffice365.com/keep-password</a></p><p style="margin-top:10px">Click here to set a new password: <a href="#" class="link-suspicious">https://microsoft-0ffice365.com/reset</a></p>`),
+                options: ["Phishing - Domain uses '0' instead of 'o' and links are suspicious", "Legitimate - Microsoft sends expiry reminders", "Legitimate - Password expiry is a real feature", "Phishing - But password reset is safe"], correctIndex: 0,
+                explanation: "Phishing. Domain uses <strong>0ffice365</strong> with a zero. Microsoft uses microsoft.com or office.com. Legitimate password changes happen inside the official portal."
+            },
+            {
+                id: 10, type: "SMS", title: "EasyPaisa Cashback Offer", simulationHTML: smsSim("EASYPAISA", "5:12 PM", `Congratulations! You've been selected for 100% cashback on your next transaction. Verify your account at <span class="sms-link">easypaisa-cashback.online/verify</span> to activate.`),
+                options: ["Legitimate - EasyPaisa offers cashback", "Phishing - Unofficial domain and unsolicited offer", "Legitimate - SMS shows EASYPAISA sender", "Phishing - But verifying is safe"], correctIndex: 1,
+                explanation: "Smishing. EasyPaisa's official domain is easypaisa.com.pk. Unsolicited '100% cashback' offers that require account verification are phishing."
+            },
+            {
+                id: 11, type: "EMAIL", title: "Amazon Order Confirmation Scam", simulationHTML: emailSim("orders@amazon-secure-billing.info", "user@email.com", "Your order #114-5567 has been placed - $899.99", `<p>Hello,</p><p style="margin-top:10px">Your order for iPhone 15 Pro ($899.99) has been placed.</p><p style="margin-top:10px">If you did not authorize this, cancel here: <a href="#" class="link-suspicious">https://amazon-secure-billing.info/cancel</a></p>`),
+                options: ["Legitimate - Amazon sends order confirmations", "Legitimate - Order number looks real", "Phishing - Unofficial domain and cancel-link trick", "Phishing - But I should click cancel to protect myself"], correctIndex: 2,
+                explanation: "Phishing. Amazon sends from amazon.com domains only. The 'cancel your fake order' trick tricks users into clicking phishing links and entering credentials."
+            },
+            {
+                id: 12, type: "WEB", title: "Fake Bank Website (Pharming)", simulationHTML: webSim("https://secure-hbl-verify.com/login", `<h2 style="color:#006b3c">HBL Internet Banking</h2><p style="margin:15px 0">Login to continue</p><input placeholder="Username" style="padding:8px;width:100%;margin-bottom:10px;border:1px solid #ccc;border-radius:4px"><input placeholder="Password" type="password" style="padding:8px;width:100%;margin-bottom:10px;border:1px solid #ccc;border-radius:4px"><button style="background:#006b3c;color:white;padding:10px 20px;border:none;border-radius:4px;width:100%">Login</button>`),
+                options: ["Legitimate - HBL login page", "Legitimate - It has HBL branding", "Phishing - But the website looks official", "Phishing - URL is not hbl.com"], correctIndex: 3,
+                explanation: "Pharming/Phishing. Real HBL Internet Banking is at hbl.com. Domain <strong>secure-hbl-verify.com</strong> is a fake designed to steal credentials."
+            },
+            {
+                id: 13, type: "SMS", title: "Bank Card Blocked Alert", simulationHTML: smsSim("MEEZAN", "9:45 AM", `Dear Customer, your Meezan Bank Debit Card has been blocked due to suspicious activity. Call 0311-1234567 to unblock.`),
+                options: ["Phishing - Personal mobile number not official helpline", "Legitimate - Meezan sends card alerts", "Legitimate - Card blocking is real", "Phishing - But I should call to unblock"], correctIndex: 0,
+                explanation: "Phishing (vishing). Banks use official helpline numbers published on cards/website, not random mobile numbers. Verify by calling the number on the back of your card."
+            },
+            {
+                id: 14, type: "EMAIL", title: "DHL Delivery Failed Notice", simulationHTML: emailSim("tracking@dhl-express-tracking.net", "customer@email.com", "Delivery failed - Reschedule your package", `<p>Dear Customer,</p><p style="margin-top:10px">Your DHL package could not be delivered. Reschedule here:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://dhl-express-tracking.net/reschedule?id=8845</a></p><p style="margin-top:10px">A $2.99 redelivery fee applies.</p>`),
+                options: ["Legitimate - DHL does charge redelivery fees", "Phishing - Unofficial domain and small fee trick", "Legitimate - Package tracking is real", "Phishing - But small fee is fine"], correctIndex: 1,
+                explanation: "Phishing. DHL uses dhl.com. The 'small fee' trick harvests card details. Real courier companies don't ask for fees via random domains."
+            },
+            {
+                id: 15, type: "SMS", title: "NADRA CNIC Verification", simulationHTML: smsSim("NADRA", "1:15 PM", `Dear Citizen, your CNIC has been flagged for verification. Visit <span class="sms-link">nadra-cnic-verify.pk/update</span> and confirm your details within 24 hours to avoid suspension.`),
+                options: ["Legitimate - NADRA does CNIC verification", "Legitimate - SMS shows NADRA sender", "Phishing - Unofficial domain and threat of suspension", "Phishing - But I should verify my CNIC"], correctIndex: 2,
+                explanation: "Phishing. NADRA's official site is nadra.gov.pk. CNIC verification happens at official NADRA offices or via the official Pak-ID portal, never through random links."
+            },
+            {
+                id: 16, type: "EMAIL", title: "LinkedIn Job Offer", simulationHTML: emailSim("hr@linkedin-careers-jobs.com", "jobseeker@email.com", "Exclusive: Remote job paying $5000/week", `<p>Congratulations!</p><p style="margin-top:10px">Based on your LinkedIn profile, you've been selected for a remote position paying $5000/week. Pay a one-time $50 registration to begin:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://linkedin-careers-jobs.com/register</a></p>`),
+                options: ["Legitimate - LinkedIn offers jobs", "Legitimate - $5000/week is realistic", "Phishing - But $50 is a small investment", "Phishing - No real job requires upfront payment"], correctIndex: 3,
+                explanation: "Phishing. Legitimate employers never ask for upfront payment. 'Too good to be true' salary + upfront fee = classic job scam."
+            },
+            {
+                id: 17, type: "EMAIL", title: "Apple ID Locked Notice", simulationHTML: emailSim("support@apple-id-locked.com", "user@icloud.com", "Your Apple ID has been locked", `<p>Your Apple ID was locked due to security reasons.</p><p style="margin-top:10px">Unlock now: <a href="#" class="link-suspicious">https://apple-id-locked.com/unlock</a></p><p style="margin-top:10px">If not unlocked within 24 hours, your account will be permanently deleted.</p>`),
+                options: ["Phishing - Unofficial domain and permanent deletion threat", "Legitimate - Apple locks accounts for security", "Legitimate - Apple uses warning emails", "Phishing - But unlocking is urgent"], correctIndex: 0,
+                explanation: "Phishing. Apple uses apple.com domains. Account locks are handled at iforgot.apple.com. Fear-based threats are a hallmark of phishing."
+            },
+            {
+                id: 18, type: "SMS", title: "WhatsApp Verification Code", simulationHTML: smsSim("+92 345 9876543", "7:30 PM", `Hi, I accidentally sent my WhatsApp code to your number. Please forward it back to me - it's urgent!`),
+                options: ["Legitimate - It's a simple mistake", "Phishing - Forwarding code lets attacker hijack your WhatsApp", "Legitimate - WhatsApp codes are shared often", "Phishing - But sharing once is harmless"], correctIndex: 1,
+                explanation: "WhatsApp hijacking. If you forward the 6-digit code, the attacker takes over your WhatsApp and impersonates you to your contacts."
+            },
+            {
+                id: 19, type: "EMAIL", title: "IRS Tax Refund", simulationHTML: emailSim("refunds@irs-gov-us.com", "taxpayer@email.com", "IRS Refund Notification - $1,245.00", `<p>Dear Taxpayer,</p><p style="margin-top:10px">You are eligible for a refund of <strong>$1,245.00</strong>. Submit your bank details:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://irs-gov-us.com/refund</a></p>`),
+                options: ["Legitimate - IRS sends refund notices", "Legitimate - Amount is specific", "Phishing - IRS never contacts via email for bank details", "Phishing - But I should claim my refund"], correctIndex: 2,
+                explanation: "Phishing. IRS uses irs.gov. They never request bank details via email. This is a classic tax-refund scam."
+            },
+            {
+                id: 20, type: "WEB", title: "Fake Google Login (Page Hijacking)", simulationHTML: webSim("https://accounts.google.com.secure-login-verify.xyz/signin", `<div style="text-align:center"><h2>Google</h2><p style="margin:20px 0">Sign in</p><input placeholder="Email or phone" style="padding:10px;width:80%;margin-bottom:10px;border:1px solid #ccc;border-radius:4px"><br><button style="background:#1a73e8;color:white;padding:10px 40px;border:none;border-radius:4px">Next</button></div>`),
+                options: ["Legitimate - accounts.google.com is Google", "Legitimate - It looks like Google", "Phishing - But email field is safe", "Phishing - Subdomain trick (secure-login-verify.xyz is not google.com)"], correctIndex: 3,
+                explanation: "Phishing (page hijacking). The real domain is <strong>secure-login-verify.xyz</strong>, with 'accounts.google.com' as a fake subdomain. Read URLs right to left of the first single slash."
+            },
+            {
+                id: 21, type: "EMAIL", title: "CEO Wire Transfer Request", simulationHTML: emailSim("ceo@yourcompany-corp.com", "finance@yourcompany.com", "Urgent wire transfer needed", `<p>Hi,</p><p style="margin-top:10px">I'm in a meeting and can't talk. Need a wire transfer of $45,000 to a new vendor urgently. Details attached. Keep this confidential.</p><p style="margin-top:10px">Sent from my iPhone</p>`),
+                options: ["Phishing - BEC scam using urgency and secrecy", "Legitimate - CEO often sends urgent emails", "Legitimate - The CEO is real", "Phishing - But I should process it quickly"], correctIndex: 0,
+                explanation: "Business Email Compromise (BEC). Look-alike domain, urgency, secrecy, and wire transfer. Always verify via a second channel (phone)."
+            },
+            {
+                id: 22, type: "SMS", title: "Netflix Free Year Offer", simulationHTML: smsSim("Netflix", "4:15 PM", `You've been selected for a FREE 1-year Netflix subscription! Claim at <span class="sms-link">netflix-freeyear.com/claim</span> within 30 minutes.`),
+                options: ["Legitimate - Netflix runs promotions", "Phishing - Too good to be true and unofficial domain", "Legitimate - Sender shows Netflix", "Phishing - But 30 minutes is plenty of time"], correctIndex: 1,
+                explanation: "Phishing. Netflix doesn't give free years via SMS. The domain netflix-freeyear.com isn't netflix.com. Short deadlines = panic clicking."
+            },
+            {
+                id: 23, type: "EMAIL", title: "Dropbox Shared File", simulationHTML: emailSim("share@dropbox-secure-files.com", "user@email.com", "Invoice_2025.pdf has been shared with you", `<p>A file has been shared with you on Dropbox:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://dropbox-secure-files.com/view/Invoice_2025.pdf</a></p><p style="margin-top:10px">This link expires in 24 hours.</p>`),
+                options: ["Legitimate - Dropbox shares files via email", "Legitimate - The filename looks real", "Phishing - Unofficial domain and urgency tactic", "Phishing - But a PDF is safe"], correctIndex: 2,
+                explanation: "Phishing. Dropbox uses dropbox.com. Fake shared-file emails often lead to credential-harvesting pages. Verify with the sender separately."
+            },
+            {
+                id: 24, type: "SMS", title: "Fake OTP from 'Bank'", simulationHTML: smsSim("+92 321 5551234", "6:00 PM", `Your verification code is 884512. Share this with our agent to complete your account upgrade.`),
+                options: ["Legitimate - The code is real", "Legitimate - Agents need OTP to help", "Phishing - But the sender seems helpful", "Phishing - Sharing OTP grants access to your account"], correctIndex: 3,
+                explanation: "OTP phishing. No legitimate bank agent needs your OTP. The OTP is the last line of defense—never share it."
+            },
+            {
+                id: 25, type: "EMAIL", title: "Instagram Copyright Violation", simulationHTML: emailSim("appeals@instagram-copyright-appeals.com", "user@email.com", "Your account will be deleted in 24h", `<p>We received a copyright complaint against your account.</p><p style="margin-top:10px">Appeal now: <a href="#" class="link-suspicious">https://instagram-copyright-appeals.com/appeal</a></p>`),
+                options: ["Phishing - Unofficial domain and 24h threat", "Legitimate - Instagram sends violation notices", "Legitimate - Copyright strikes are common", "Phishing - But I should appeal quickly"], correctIndex: 0,
+                explanation: "Phishing. Instagram uses instagram.com and meta.com domains. Copyright appeals happen inside the app or via official portals."
+            },
+            {
+                id: 26, type: "WEB", title: "Fake WhatsApp Web QR", simulationHTML: webSim("https://whatsapp-web-scan.com/qr", `<div style="text-align:center"><h2>WhatsApp Web</h2><p style="margin:20px">Scan this QR code with your phone</p><img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><rect width='150' height='150' fill='white'/><rect x='20' y='20' width='30' height='30'/><rect x='100' y='20' width='30' height='30'/><rect x='20' y='100' width='30' height='30'/><rect x='60' y='60' width='30' height='30'/></svg>" alt="QR" style="border:4px solid #000;padding:5px"></div>`),
+                options: ["Legitimate - WhatsApp Web uses QR codes", "Phishing - Official WhatsApp Web is web.whatsapp.com only", "Legitimate - QR is safe to scan", "Phishing - But I use WhatsApp Web daily"], correctIndex: 1,
+                explanation: "Phishing. Only web.whatsapp.com is legitimate. Scanning QR codes on fake domains links your WhatsApp to the attacker's device, giving them full access."
+            },
+            {
+                id: 27, type: "SMS", title: "Fake Bank Transaction Alert", simulationHTML: smsSim("+92 333 1112233", "8:20 PM", `Rs. 45,000 debited from your account. If not you, call 0321-9876543 immediately.`),
+                options: ["Legitimate - Bank alerts from personal numbers are normal", "Legitimate - Amount looks serious", "Phishing - Banks use official sender IDs, not personal numbers", "Phishing - But I should call to check"], correctIndex: 2,
+                explanation: "Vishing prep. Real bank alerts come from short codes/sender IDs like 'HBL' or 'MEEZAN'. Personal numbers → fake call center to steal your credentials."
+            },
+            {
+                id: 28, type: "EMAIL", title: "Spotify Premium Renewal", simulationHTML: emailSim("billing@spotify-premium-renew.com", "user@email.com", "Payment failed - Account suspended", `<p>Hi,</p><p style="margin-top:10px">Your Spotify Premium payment failed. Update your card now:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://spotify-premium-renew.com/update</a></p>`),
+                options: ["Legitimate - Spotify sends renewal reminders", "Legitimate - Spotify Premium is real", "Phishing - But my subscription matters", "Phishing - Unofficial domain"], correctIndex: 3,
+                explanation: "Phishing. Spotify uses spotify.com. Fake renewal emails target card details. Check subscriptions inside the Spotify app instead."
+            },
+            {
+                id: 29, type: "EMAIL", title: "Zoom Meeting Invite", simulationHTML: emailSim("meetings@zoom-invite-secure.com", "team@company.com", "Join: Q4 Financial Review", `<p>You've been invited to a Zoom meeting.</p><p style="margin-top:10px">Join here: <a href="#" class="link-suspicious">https://zoom-invite-secure.com/j/88451234</a></p><p style="margin-top:10px">Meeting ID: 884-512-3456</p>`),
+                options: ["Phishing - Unofficial domain", "Legitimate - Zoom invites come via email", "Legitimate - Meeting ID looks real", "Phishing - But the meeting is important"], correctIndex: 0,
+                explanation: "Phishing. Real Zoom links use zoom.us or zoom.com. Fake invite domains often lead to credential harvesting pages mimicking Zoom."
+            },
+            {
+                id: 30, type: "SMS", title: "Fake Government Grant", simulationHTML: smsSim("Govt of Pakistan", "10:00 AM", `You are eligible for a Rs. 25,000 Ehsaas grant. Register at <span class="sms-link">ehsaas-grant-2025.pk/apply</span> with your CNIC and bank account.`),
+                options: ["Legitimate - Ehsaas program offers grants", "Phishing - Unofficial domain and asks for bank details", "Legitimate - SMS shows Govt of Pakistan", "Phishing - But the grant is real"], correctIndex: 1,
+                explanation: "Phishing. Real Ehsaas/BISP programs use official portals (bisp.gov.pk). Random domains collecting CNIC+bank info are scams."
+            },
+            {
+                id: 31, type: "EMAIL", title: "Wells Fargo Security Alert", simulationHTML: emailSim("alerts@wellsfargo-secure-messages.com", "customer@email.com", "Suspicious activity on your card", `<p>Dear Customer,</p><p style="margin-top:10px">We detected suspicious activity. Verify your card details:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://wellsfargo-secure-messages.com/verify</a></p>`),
+                options: ["Legitimate - Wells Fargo sends alerts", "Legitimate - Bank alerts are common", "Phishing - Unofficial domain", "Phishing - But I need to protect my card"], correctIndex: 2,
+                explanation: "Phishing. Wells Fargo uses wellsfargo.com. Real alerts direct you to log in via the official website or app, not an emailed link."
+            },
+            {
+                id: 32, type: "WEB", title: "Fake Microsoft Login", simulationHTML: webSim("https://login.microsoftonline.com.auth-verify.xyz/", `<div style="text-align:center"><h2>Microsoft</h2><p style="margin:20px">Sign in to your account</p><input placeholder="Email" style="padding:10px;width:80%;margin-bottom:10px;border:1px solid #ccc;border-radius:4px"><br><button style="background:#0067b8;color:white;padding:10px 40px;border:none">Sign in</button></div>`),
+                options: ["Legitimate - login.microsoftonline.com is Microsoft", "Legitimate - Looks exactly like Microsoft", "Phishing - But Microsoft domains are trusted", "Phishing - Real domain is auth-verify.xyz"], correctIndex: 3,
+                explanation: "Phishing. The real domain is <strong>auth-verify.xyz</strong>; 'login.microsoftonline.com' is only a subdomain. Microsoft uses microsoftonline.com."
+            },
+            {
+                id: 33, type: "SMS", title: "Fake Ride-Hailing Refund", simulationHTML: smsSim("Careem", "3:05 PM", `Your last ride was overcharged. Claim Rs. 850 refund at <span class="sms-link">careem-refunds.net/claim</span> within 24h.`),
+                options: ["Phishing - Unofficial domain and urgency", "Legitimate - Careem issues refunds", "Legitimate - Refunds need verification", "Phishing - But refund is mine"], correctIndex: 0,
+                explanation: "Phishing. Careem refunds go through the app. Random domains + urgency = credential harvesting."
+            },
+            {
+                id: 34, type: "EMAIL", title: "University Scholarship Scam", simulationHTML: emailSim("scholarships@intl-scholarship-award.org", "student@email.com", "You have won a $10,000 scholarship!", `<p>Dear Student,</p><p style="margin-top:10px">Congratulations! You've been awarded a $10,000 scholarship. Pay a $75 processing fee to claim:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://intl-scholarship-award.org/pay</a></p>`),
+                options: ["Legitimate - Scholarships are awarded via email", "Phishing - Real scholarships never require payment", "Legitimate - $10,000 is reasonable", "Phishing - But $75 fee is worth it"], correctIndex: 1,
+                explanation: "Phishing. Genuine scholarships never charge a processing fee. 'Pay to receive money' = scam."
+            },
+            {
+                id: 35, type: "EMAIL", title: "Twitter/X Verification Badge", simulationHTML: emailSim("verify@x-verification-badge.com", "user@email.com", "Get your verified badge today", `<p>Congratulations! You qualify for a verified badge.</p><p style="margin-top:10px">Apply now: <a href="#" class="link-suspicious">https://x-verification-badge.com/apply</a></p><p style="margin-top:10px">Fee: $8/month</p>`),
+                options: ["Legitimate - X offers verification", "Legitimate - $8/month is the real price", "Phishing - Unofficial domain", "Phishing - But I want a badge"], correctIndex: 2,
+                explanation: "Phishing. X verification happens in the X app at x.com or twitter.com, not via third-party domains."
+            },
+            {
+                id: 36, type: "SMS", title: "Fake Traffic Challan", simulationHTML: smsSim("Traffic Police", "12:30 PM", `Your vehicle has an unpaid challan of Rs. 5,000. Pay now at <span class="sms-link">punjab-challan-pay.pk</span> or license will be suspended.`),
+                options: ["Legitimate - Traffic police sends challan alerts", "Legitimate - Challans need paying", "Phishing - But I might have unpaid challans", "Phishing - Unofficial domain and threat"], correctIndex: 3,
+                explanation: "Phishing. Real challans are checked at official government portals. Fear-based suspension threats are red flags."
+            },
+            {
+                id: 37, type: "EMAIL", title: "Facebook Meta Business Alert", simulationHTML: emailSim("security@meta-business-alerts.com", "business@email.com", "Your ad account is restricted", `<p>Your Facebook Ads account is restricted due to policy violation.</p><p style="margin-top:10px">Appeal here: <a href="#" class="link-suspicious">https://meta-business-alerts.com/appeal</a></p>`),
+                options: ["Phishing - Unofficial domain", "Legitimate - Meta sends business alerts", "Legitimate - Policy violations are real", "Phishing - But I should appeal quickly"], correctIndex: 0,
+                explanation: "Phishing. Meta uses facebook.com and business.facebook.com domains only. Appeals are inside Meta Business Suite."
+            },
+            {
+                id: 38, type: "WEB", title: "Fake Bank Mobile App Download", simulationHTML: webSim("https://hbl-app-download.net/android.apk", `<div style="text-align:center;padding:20px"><h2 style="color:#006b3c">HBL Mobile Banking</h2><p>Download the new HBL Mobile App</p><button style="background:#006b3c;color:white;padding:12px 30px;border:none;border-radius:6px;margin-top:15px">Download APK</button><p style="margin-top:10px;font-size:0.8rem;color:#666">Version 5.2 · 45 MB</p></div>`),
+                options: ["Legitimate - Banks offer app downloads", "Phishing - Sideloaded APKs from unofficial sites are dangerous", "Legitimate - It's HBL branded", "Phishing - But I need the app"], correctIndex: 1,
+                explanation: "Phishing (trojan). Banking apps must only be downloaded from Google Play or App Store. Sideloaded APKs steal credentials and intercept OTPs."
+            },
+            {
+                id: 39, type: "SMS", title: "Lottery Win Notification", simulationHTML: smsSim("+92 300 7778888", "5:50 PM", `You've won Rs. 5,00,000 in Dubai Millennium Lottery! Send your bank details to claim.`),
+                options: ["Legitimate - Lotteries do notify winners", "Legitimate - Amount is large", "Phishing - You can't win a lottery you never entered", "Phishing - But I should share details"], correctIndex: 2,
+                explanation: "Advance-fee scam. Lotteries you didn't enter are scams. Never share bank details with strangers."
+            },
+            {
+                id: 40, type: "EMAIL", title: "Adobe Subscription Renewal", simulationHTML: emailSim("renew@adobe-subscriptions-portal.com", "user@email.com", "Your Adobe subscription expires in 3 days", `<p>Hi,</p><p style="margin-top:10px">Your Adobe Creative Cloud subscription expires in 3 days. Renew now to avoid losing files:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://adobe-subscriptions-portal.com/renew</a></p>`),
+                options: ["Legitimate - Adobe sends renewal reminders", "Legitimate - Adobe subscriptions expire", "Phishing - But I need Adobe", "Phishing - Unofficial domain"], correctIndex: 3,
+                explanation: "Phishing. Adobe uses adobe.com. Renewals happen at adobe.com or in the Creative Cloud app."
+            },
+            {
+                id: 41, type: "EMAIL", title: "Fake Job Interview Request", simulationHTML: emailSim("recruiter@careers-google-jobs.com", "candidate@email.com", "Google interview invitation", `<p>Hi,</p><p style="margin-top:10px">We'd like to interview you for a Software Engineer role. Fill this form with your SSN and bank details for background check:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://careers-google-jobs.com/form</a></p>`),
+                options: ["Phishing - Real employers never ask for SSN/bank before hiring", "Legitimate - Google recruits via email", "Legitimate - Background checks need info", "Phishing - But it's a Google job!"], correctIndex: 0,
+                explanation: "Phishing. Google uses google.com and careers.google.com. No legitimate employer requests SSN or bank details before an offer."
+            },
+            {
+                id: 42, type: "SMS", title: "Fake Uber Charge", simulationHTML: smsSim("UBER", "2:20 PM", `Your Uber account was charged $245.99 for a trip you didn't take? Cancel at <span class="sms-link">uber-billing-support.com/dispute</span>`),
+                options: ["Legitimate - Uber sends billing alerts", "Phishing - Unofficial domain and dispute-link trap", "Legitimate - Charges can be disputed", "Phishing - But I need my refund"], correctIndex: 1,
+                explanation: "Phishing. Uber uses uber.com. The 'dispute charge' trick lures victims into entering credentials on fake pages."
+            },
+            {
+                id: 43, type: "EMAIL", title: "Binance Withdrawal Alert", simulationHTML: emailSim("security@binance-withdrawals-alert.com", "user@email.com", "Withdrawal of 0.5 BTC requested", `<p>Your Binance account requested a withdrawal of 0.5 BTC.</p><p style="margin-top:10px">If this wasn't you, cancel immediately:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://binance-withdrawals-alert.com/cancel</a></p>`),
+                options: ["Legitimate - Binance sends withdrawal alerts", "Legitimate - Crypto withdrawals are common", "Phishing - Unofficial domain and cancel-link trap", "Phishing - But I need to protect my funds"], correctIndex: 2,
+                explanation: "Phishing. Binance uses binance.com. Always check balances in the app; never click emailed crypto 'cancel' links."
+            },
+            {
+                id: 44, type: "EMAIL", title: "Fake Salary Increase Notice", simulationHTML: emailSim("hr@yourcompany-benefits.com", "employee@yourcompany.com", "Confidential: Your salary increase", `<p>Hi,</p><p style="margin-top:10px">You've been approved for a 40% salary increase. Log in with your work credentials to view details:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://yourcompany-benefits.com/login</a></p>`),
+                options: ["Legitimate - HR sends salary notices", "Legitimate - Salary increases are real", "Phishing - But I want the raise", "Phishing - Unofficial domain harvesting work credentials"], correctIndex: 3,
+                explanation: "Phishing (spear). Attackers impersonate HR to steal corporate credentials. Verify through official HR channels."
+            },
+            {
+                id: 45, type: "WEB", title: "Fake Facebook Login", simulationHTML: webSim("https://facebook-login-secure.com/login", `<div style="text-align:center"><h2 style="color:#1877f2">facebook</h2><input placeholder="Email or phone" style="padding:10px;width:80%;margin:10px 0;border:1px solid #ccc;border-radius:4px"><br><input placeholder="Password" type="password" style="padding:10px;width:80%;margin-bottom:10px;border:1px solid #ccc;border-radius:4px"><br><button style="background:#1877f2;color:white;padding:10px 60px;border:none;border-radius:6px">Log In</button></div>`),
+                options: ["Phishing - URL is not facebook.com", "Legitimate - Facebook login page", "Legitimate - Facebook branding", "Phishing - But it looks identical"], correctIndex: 0,
+                explanation: "Phishing. The URL is <strong>facebook-login-secure.com</strong>, not facebook.com. Fake domains visually clone the real login."
+            },
+            {
+                id: 46, type: "SMS", title: "Fake Refund from Daraz", simulationHTML: smsSim("Daraz", "4:00 PM", `Your Daraz order was cancelled. Claim your refund at <span class="sms-link">daraz-refund.pk/claim</span> within 24h.`),
+                options: ["Legitimate - Daraz issues refunds", "Phishing - Unofficial domain and deadline", "Legitimate - SMS shows Daraz", "Phishing - But my refund is pending"], correctIndex: 1,
+                explanation: "Phishing. Daraz refunds go back through the original payment method and app. Never via random links."
+            },
+            {
+                id: 47, type: "EMAIL", title: "Zoom Update Required", simulationHTML: emailSim("updates@zoom-software-update.com", "user@email.com", "Zoom update required for security", `<p>Zoom requires you to update to the latest version.</p><p style="margin-top:10px">Download: <a href="#" class="link-suspicious">https://zoom-software-update.com/download</a></p>`),
+                options: ["Legitimate - Zoom sends updates", "Legitimate - Security updates are important", "Phishing - Unofficial domain and fake download link", "Phishing - But I want the new features"], correctIndex: 2,
+                explanation: "Phishing (malware). Fake update downloads install malware. Updates only via zoom.us or the app itself."
+            },
+            {
+                id: 48, type: "EMAIL", title: "Award Notification Scam", simulationHTML: emailSim("awards@worldexcellence-awards.org", "user@email.com", "You've been selected for the World Excellence Award", `<p>Dear Winner,</p><p style="margin-top:10px">You've been selected for the World Excellence Award. Pay $250 processing fee to receive your $50,000 prize:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://worldexcellence-awards.org/pay</a></p>`),
+                options: ["Legitimate - Awards announce via email", "Legitimate - $250 is small vs $50,000", "Phishing - But the prize is huge", "Phishing - Real awards never ask for money"], correctIndex: 3,
+                explanation: "Advance-fee fraud. Legitimate awards don't ask winners to pay. If you must pay to receive a prize, it's a scam."
+            },
+            {
+                id: 49, type: "SMS", title: "Fake Bank KYC Update", simulationHTML: smsSim("Bank Alfalah", "11:30 AM", `Dear Customer, your KYC is expired. Update at <span class="sms-link">bankalfalah-kyc-update.com</span> or your account will be frozen in 24h.`),
+                options: ["Phishing - Unofficial domain and freeze threat", "Legitimate - Banks require KYC updates", "Legitimate - KYC is legal requirement", "Phishing - But I don't want my account frozen"], correctIndex: 0,
+                explanation: "Phishing. Bank Alfalah uses bankalfalah.com. KYC updates happen at branches or via official app/website."
+            },
+            {
+                id: 50, type: "EMAIL", title: "Fake Invoice from Vendor", simulationHTML: emailSim("accounts@microsooft-billing.com", "ap@yourcompany.com", "Invoice #INV-2025-8845 due", `<p>Dear Accounts,</p><p style="margin-top:10px">Please find the attached invoice for $12,500 due immediately.</p><p style="margin-top:10px">Payment details: <a href="#" class="link-suspicious">https://microsooft-billing.com/pay</a></p><p style="margin-top:10px">Regards,<br>Microsoft Billing</p>`),
+                options: ["Legitimate - Microsoft sends invoices", "Phishing - Typosquatting domain (microsooft with double o)", "Legitimate - Invoice amounts are specific", "Phishing - But I should pay to avoid penalty"], correctIndex: 1,
+                explanation: "Phishing (BEC/invoice fraud). Domain <strong>microsooft</strong> has an extra 'o'. Always verify vendor invoices via known contacts."
+            },
+            {
+                id: 51, type: "EMAIL", title: "Fake Package Tracking", simulationHTML: emailSim("track@fedex-tracking-delivery.net", "customer@email.com", "FedEx: Your package is on hold", `<p>Your FedEx package is on hold due to address verification.</p><p style="margin-top:10px">Update your address: <a href="#" class="link-suspicious">https://fedex-tracking-delivery.net/update</a></p>`),
+                options: ["Legitimate - FedEx sends tracking updates", "Legitimate - Address issues happen", "Phishing - Unofficial domain", "Phishing - But I want my package"], correctIndex: 2,
+                explanation: "Phishing. FedEx uses fedex.com. Always track packages via the official website using the tracking number."
+            },
+            {
+                id: 52, type: "SMS", title: "Fake PTA Tax Notice", simulationHTML: smsSim("PTA", "3:40 PM", `Your mobile device IMEI is unregistered. Pay tax at <span class="sms-link">pta-tax-pay.pk</span> to avoid blockage in 48h.`),
+                options: ["Legitimate - PTA does block unregistered phones", "Legitimate - SMS shows PTA sender", "Phishing - But my phone might get blocked", "Phishing - Unofficial domain and urgency"], correctIndex: 3,
+                explanation: "Phishing. PTA uses pta.gov.pk and dirbs.pta.gov.pk. Payments happen through official channels."
+            },
+            {
+                id: 53, type: "EMAIL", title: "Fake Airbnb Reservation", simulationHTML: emailSim("bookings@airbnb-reservations-alert.com", "user@email.com", "New reservation confirmed", `<p>You have a new Airbnb reservation for $1,250.</p><p style="margin-top:10px">If this wasn't you, review here:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://airbnb-reservations-alert.com/review</a></p>`),
+                options: ["Phishing - Unofficial domain and review-link trap", "Legitimate - Airbnb sends booking alerts", "Legitimate - Reservations are real", "Phishing - But I need to check"], correctIndex: 0,
+                explanation: "Phishing. Airbnb uses airbnb.com. Check bookings in the app or on the official website."
+            },
+            {
+                id: 54, type: "EMAIL", title: "Fake Spotify Family Invite", simulationHTML: emailSim("family@spotify-family-invite.com", "user@email.com", "Join Spotify Family - 50% off", `<p>You've been invited to join a Spotify Family plan.</p><p style="margin-top:10px">Accept here: <a href="#" class="link-suspicious">https://spotify-family-invite.com/accept</a></p>`),
+                options: ["Legitimate - Spotify sends family invites", "Phishing - Unofficial domain", "Legitimate - Family plans exist", "Phishing - But 50% off is great"], correctIndex: 1,
+                explanation: "Phishing. Spotify uses spotify.com. The 'discount invite' is bait for credential theft."
+            },
+            {
+                id: 55, type: "SMS", title: "Fake Bank Loan Approval", simulationHTML: smsSim("+92 311 4445556", "7:15 PM", `Congrats! Your loan of Rs. 5,00,000 is approved. Pay Rs. 3,500 processing fee to activate. Call 0312-1234567.`),
+                options: ["Legitimate - Banks approve loans via SMS", "Legitimate - Amount is realistic", "Phishing - Loan approval requires processing fee upfront", "Phishing - But I need the loan"], correctIndex: 2,
+                explanation: "Loan scam. Real banks never ask for upfront fees via SMS. Legitimate loans are processed through branches or official apps."
+            },
+            {
+                id: 56, type: "EMAIL", title: "Fake USB Drive Policy", simulationHTML: emailSim("it-security@yourcompany-it.com", "allstaff@yourcompany.com", "New USB policy - Install driver", `<p>Dear Staff,</p><p style="margin-top:10px">New IT policy requires installing the USB security driver on all workstations:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://yourcompany-it.com/usb-driver.exe</a></p>`),
+                options: ["Legitimate - IT sends policy updates", "Legitimate - Security drivers are needed", "Phishing - But IT asked for it", "Phishing - Executable from unofficial domain = malware"], correctIndex: 3,
+                explanation: "Phishing (malware). Legitimate IT deploys software via internal systems, not external domains with .exe files."
+            },
+            {
+                id: 57, type: "EMAIL", title: "Fake 2FA Reset", simulationHTML: emailSim("security@yourbank-2fa-reset.com", "user@email.com", "Your 2FA has been disabled", `<p>Your 2FA was disabled. If this wasn't you, re-enable it immediately:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://yourbank-2fa-reset.com/enable</a></p>`),
+                options: ["Phishing - Unofficial domain and fear tactic", "Legitimate - Banks alert when 2FA is disabled", "Legitimate - 2FA resets are real", "Phishing - But I need my 2FA back"], correctIndex: 0,
+                explanation: "Phishing. Banks use their official domains. Always manage 2FA directly through the bank's app or website."
+            },
+            {
+                id: 58, type: "SMS", title: "Fake Vaccination Certificate", simulationHTML: smsSim("NIMS", "12:45 PM", `Your COVID vaccination certificate is ready. Download at <span class="sms-link">nims-certificate-pk.com/download</span> with your CNIC.`),
+                options: ["Legitimate - NIMS issues certificates", "Phishing - Unofficial domain collecting CNIC", "Legitimate - SMS shows NIMS", "Phishing - But I need the certificate"], correctIndex: 1,
+                explanation: "Phishing. NIMS uses nims.nadra.gov.pk. Certificates are downloadable through the official portal."
+            },
+            {
+                id: 59, type: "EMAIL", title: "Fake Charity Donation", simulationHTML: emailSim("donate@relief-fund-global.org", "user@email.com", "Help victims - Urgent donation needed", `<p>Dear Friend,</p><p style="margin-top:10px">Please help victims of the recent disaster. Donate now:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://relief-fund-global.org/donate</a></p>`),
+                options: ["Legitimate - Charities ask for donations", "Legitimate - Disaster relief is real", "Phishing - Unsolicited charity emails often scam", "Phishing - But I want to help"], correctIndex: 2,
+                explanation: "Charity phishing. Always donate through verified charities (e.g., Edhi, Alkhidmat, Red Cross). Never via unsolicited emails."
+            },
+            {
+                id: 60, type: "EMAIL", title: "Fake Zoom Recording", simulationHTML: emailSim("no-reply@zoom-recordings-share.com", "user@email.com", "Your Zoom meeting recording", `<p>The recording of your meeting is ready:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://zoom-recordings-share.com/watch/8845</a></p>`),
+                options: ["Legitimate - Zoom shares recordings", "Legitimate - Recordings are convenient", "Phishing - But I need to review the meeting", "Phishing - Unofficial domain"], correctIndex: 3,
+                explanation: "Phishing. Zoom uses zoom.us domains. Fake recording links often install malware."
+            },
+            {
+                id: 61, type: "SMS", title: "Fake Binance SMS", simulationHTML: smsSim("Binance", "6:30 PM", `Security alert: New login from Russia. If not you, secure at <span class="sms-link">binance-secure-login.com</span>`),
+                options: ["Phishing - Unofficial domain", "Legitimate - Binance alerts via SMS", "Legitimate - Login alerts are common", "Phishing - But I need to secure my account"], correctIndex: 0,
+                explanation: "Phishing. Binance uses binance.com. Only act through the app or official website."
+            },
+            {
+                id: 62, type: "EMAIL", title: "Fake Insurance Claim", simulationHTML: emailSim("claims@national-insurance-claim.com", "user@email.com", "Your claim is approved", `<p>Dear Policyholder,</p><p style="margin-top:10px">Your claim of $4,500 is approved. Submit bank details:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://national-insurance-claim.com/submit</a></p>`),
+                options: ["Legitimate - Insurers email claim updates", "Phishing - Unofficial domain and bank detail request", "Legitimate - Claims are approved often", "Phishing - But my claim is pending"], correctIndex: 1,
+                explanation: "Phishing. Insurance companies use official portals. Never submit bank details via emailed links."
+            },
+            {
+                id: 63, type: "WEB", title: "Fake Amazon Login", simulationHTML: webSim("https://amazon-signin-secure.com/ap/signin", `<div style="text-align:center"><h2 style="color:#ff9900">amazon</h2><p style="margin:15px">Sign in</p><input placeholder="Email or mobile phone number" style="padding:10px;width:80%;margin-bottom:10px;border:1px solid #ccc;border-radius:4px"><br><button style="background:#f0c14b;border:1px solid #a88734;padding:10px 40px;border-radius:4px">Continue</button></div>`),
+                options: ["Legitimate - Amazon login", "Legitimate - Amazon colors match", "Phishing - URL is not amazon.com", "Phishing - But it looks real"], correctIndex: 2,
+                explanation: "Phishing. The URL is <strong>amazon-signin-secure.com</strong>, not amazon.com. Always check the domain before signing in."
+            },
+            {
+                id: 64, type: "EMAIL", title: "Fake HR Payroll Update", simulationHTML: emailSim("payroll@yourcompany-payroll-update.com", "employee@company.com", "Update your direct deposit info", `<p>Dear Employee,</p><p style="margin-top:10px">Please update your direct deposit details for the new payroll system:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://yourcompany-payroll-update.com/update</a></p>`),
+                options: ["Legitimate - HR updates payroll regularly", "Legitimate - Direct deposit changes are normal", "Phishing - But HR asked for it", "Phishing - Unofficial domain for redirecting salary"], correctIndex: 3,
+                explanation: "Phishing (payroll diversion). Attackers redirect your salary to their account. Confirm via HR phone/email known to you."
+            },
+            {
+                id: 65, type: "SMS", title: "Fake FedEx Delivery", simulationHTML: smsSim("FedEx", "1:50 PM", `Your parcel is delayed. Update address at <span class="sms-link">fedex-delivery-update.com</span> within 24h.`),
+                options: ["Phishing - Unofficial domain", "Legitimate - FedEx sends delivery texts", "Legitimate - Delays are common", "Phishing - But I want my parcel"], correctIndex: 0,
+                explanation: "Phishing. FedEx uses fedex.com. Track shipments only on the official site or app."
+            },
+            {
+                id: 66, type: "EMAIL", title: "Fake University Fee Payment", simulationHTML: emailSim("bursar@university-fee-payment.com", "student@university.edu", "Fee payment portal open", `<p>Dear Student,</p><p style="margin-top:10px">Semester fee is due. Pay online here:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://university-fee-payment.com/pay</a></p>`),
+                options: ["Legitimate - Universities send fee reminders", "Phishing - Unofficial domain", "Legitimate - Fees must be paid", "Phishing - But deadline is near"], correctIndex: 1,
+                explanation: "Phishing. Universities use official .edu domains. Pay only through the university's official portal."
+            },
+            {
+                id: 67, type: "EMAIL", title: "Fake Google Drive Share", simulationHTML: emailSim("share@google-drive-docs-share.com", "user@gmail.com", "Invoice March.pdf shared with you", `<p>A file has been shared with you:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://google-drive-docs-share.com/view/Invoice_March.pdf</a></p>`),
+                options: ["Legitimate - Google Drive shares files", "Legitimate - Invoice files are normal", "Phishing - Unofficial domain", "Phishing - But the invoice is important"], correctIndex: 2,
+                explanation: "Phishing. Google Drive uses drive.google.com. Fake share links steal Google credentials."
+            },
+            {
+                id: 68, type: "SMS", title: "Fake Telenor Reward", simulationHTML: smsSim("Telenor", "3:15 PM", `Telenor: You've won 10GB free data! Activate at <span class="sms-link">telenor-rewards.pk</span>`),
+                options: ["Legitimate - Telenor gives free data", "Legitimate - Sender shows Telenor", "Phishing - But I need free data", "Phishing - Unofficial domain"], correctIndex: 3,
+                explanation: "Phishing. Telenor uses telenor.com.pk. Free-data offers via random domains are scams."
+            },
+            {
+                id: 69, type: "EMAIL", title: "Fake Resume Request", simulationHTML: emailSim("recruitment@linkedin-talent.com", "user@email.com", "Your resume is needed urgently", `<p>Hi,</p><p style="margin-top:10px">We saw your profile and want to hire you. Send your resume with full ID details to:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://linkedin-talent.com/submit</a></p>`),
+                options: ["Phishing - Unofficial domain and ID harvesting", "Legitimate - Recruiters send emails", "Legitimate - Recruiters need resumes", "Phishing - But this could be real"], correctIndex: 0,
+                explanation: "Phishing. LinkedIn uses linkedin.com. Recruiters contact via the platform; never email full ID details."
+            },
+            {
+                id: 70, type: "EMAIL", title: "Fake Stripe Payment", simulationHTML: emailSim("billing@stripe-payment-alert.com", "user@email.com", "Payment failed on your account", `<p>Your payment failed. Update your card:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://stripe-payment-alert.com/update</a></p>`),
+                options: ["Legitimate - Stripe sends billing alerts", "Phishing - Unofficial domain", "Legitimate - Payment failures happen", "Phishing - But I need to fix it"], correctIndex: 1,
+                explanation: "Phishing. Stripe uses stripe.com. Billing issues appear in the merchant's dashboard."
+            },
+            {
+                id: 71, type: "SMS", title: "Fake Bank OTP", simulationHTML: smsSim("+92 345 1119999", "9:20 PM", `Your OTP is 442581 for account access. If not you, call 0321-1112222.`),
+                options: ["Legitimate - Banks send OTPs", "Legitimate - 2FA is standard", "Phishing - OTP sent only after you initiate transaction", "Phishing - But I didn't request it"], correctIndex: 2,
+                explanation: "Phishing. You should only receive OTPs after YOU initiate an action. An unsolicited OTP means someone else is trying to access your account."
+            },
+            {
+                id: 72, type: "EMAIL", title: "Fake Stripe Connect Invite", simulationHTML: emailSim("connect@stripe-connect-invite.com", "user@email.com", "You've been invited to Stripe Connect", `<p>You've been invited to accept payments with Stripe Connect:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://stripe-connect-invite.com/accept</a></p>`),
+                options: ["Legitimate - Stripe sends invites", "Legitimate - Stripe Connect is real", "Phishing - But I want to accept payments", "Phishing - Unofficial domain"], correctIndex: 3,
+                explanation: "Phishing. Stripe invites come from stripe.com. Third-party domains steal your Stripe credentials."
+            },
+            {
+                id: 73, type: "EMAIL", title: "Fake 2FA Code Request", simulationHTML: emailSim("it-support@yourcompany-helpdesk.com", "employee@company.com", "Helpdesk: Verify your login", `<p>Dear Employee,</p><p style="margin-top:10px">We're testing our new SSO. Please reply with the 6-digit code sent to your phone.</p>`),
+                options: ["Phishing - Never share 2FA codes, even with 'IT'", "Legitimate - IT tests SSO regularly", "Legitimate - IT needs codes for testing", "Phishing - But IT asked politely"], correctIndex: 0,
+                explanation: "Phishing. IT never needs your 2FA code. Sharing it lets attackers bypass MFA. Verify IT requests via known channels."
+            },
+            {
+                id: 74, type: "SMS", title: "Fake Mobile Wallet Alert", simulationHTML: smsSim("+92 300 5556666", "4:25 PM", `Your account has been credited Rs. 15,000. Click <span class="sms-link">wallet-balance-check.pk</span> to verify.`),
+                options: ["Legitimate - Wallets send credit alerts", "Phishing - Unofficial domain, random sender", "Legitimate - Credits are common", "Phishing - But I want to check balance"], correctIndex: 1,
+                explanation: "Phishing. Check balances in the official wallet app. Unofficial 'verify' links steal credentials."
+            },
+            {
+                id: 75, type: "EMAIL", title: "Fake Government Grant", simulationHTML: emailSim("grants@pm-youth-program.info", "user@email.com", "You qualify for PM Youth Grant Rs. 500,000", `<p>Dear Applicant,</p><p style="margin-top:10px">You've qualified for Rs. 500,000 PM Youth Grant. Pay Rs. 5,000 fee:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://pm-youth-program.info/pay</a></p>`),
+                options: ["Legitimate - Government grants are real", "Legitimate - Program is real", "Phishing - Unofficial domain and upfront fee", "Phishing - But the grant is huge"], correctIndex: 2,
+                explanation: "Phishing. Government grants never require upfront fees. Official programs use gov.pk domains."
+            },
+            {
+                id: 76, type: "EMAIL", title: "Fake Verizon Bill", simulationHTML: emailSim("billing@verizon-billpay-alert.com", "user@email.com", "Your bill is overdue", `<p>Your Verizon bill of $245.50 is overdue. Pay now:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://verizon-billpay-alert.com/pay</a></p>`),
+                options: ["Legitimate - Verizon sends bill reminders", "Legitimate - Bills are real", "Phishing - But I don't want disconnection", "Phishing - Unofficial domain"], correctIndex: 3,
+                explanation: "Phishing. Verizon uses verizon.com. Pay bills only through the official app or website."
+            },
+            {
+                id: 77, type: "SMS", title: "Fake Reward Points", simulationHTML: smsSim("+92 333 2221111", "6:00 PM", `Your reward points expire today! Redeem at <span class="sms-link">reward-points-redeem.pk</span>`),
+                options: ["Phishing - Unofficial domain and expiry tactic", "Legitimate - Companies have reward points", "Legitimate - Points do expire", "Phishing - But I want to redeem points"], correctIndex: 0,
+                explanation: "Phishing. Redeem points only through official merchant apps/websites, never via SMS links."
+            },
+            {
+                id: 78, type: "EMAIL", title: "Fake Tax Authority Notice", simulationHTML: emailSim("notice@tax-authority-online.info", "user@email.com", "Tax notice - Immediate action required", `<p>Dear Taxpayer,</p><p style="margin-top:10px">You have unpaid taxes. Pay online to avoid legal action:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://tax-authority-online.info/pay</a></p>`),
+                options: ["Legitimate - Tax authorities send notices", "Phishing - Unofficial domain and legal threat", "Legitimate - Taxes are serious", "Phishing - But I need to pay"], correctIndex: 1,
+                explanation: "Phishing. Tax notices use official gov domains. Verify through the tax authority's official portal."
+            },
+            {
+                id: 79, type: "EMAIL", title: "Fake Airline Booking", simulationHTML: emailSim("booking@emirates-booking-update.com", "user@email.com", "Your flight is cancelled", `<p>Your flight EK-885 is cancelled. Get a refund by verifying your card:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://emirates-booking-update.com/refund</a></p>`),
+                options: ["Legitimate - Airlines send cancellation notices", "Legitimate - Flights get cancelled", "Phishing - Unofficial domain", "Phishing - But I need my refund"], correctIndex: 2,
+                explanation: "Phishing. Emirates uses emirates.com. Refunds process automatically; official emails link to emirates.com."
+            },
+            {
+                id: 80, type: "SMS", title: "Fake WhatsApp Voice Message", simulationHTML: smsSim("+92 310 9991111", "5:00 PM", `You have a new WhatsApp voice message. Listen: <span class="sms-link">whatsapp-voicemail-list.net</span>`),
+                options: ["Legitimate - WhatsApp sends voicemail notifications", "Legitimate - Voicemail exists", "Phishing - But I want to hear the message", "Phishing - Unofficial domain"], correctIndex: 3,
+                explanation: "Phishing. WhatsApp messages appear in the app, not via SMS links. The fake page steals credentials."
+            },
+            {
+                id: 81, type: "EMAIL", title: "Fake Google Ads Suspension", simulationHTML: emailSim("policy@google-ads-policy-alert.com", "advertiser@email.com", "Your Google Ads account is suspended", `<p>Your Google Ads account is suspended. Appeal here:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://google-ads-policy-alert.com/appeal</a></p>`),
+                options: ["Phishing - Unofficial domain", "Legitimate - Google sends policy notices", "Legitimate - Suspensions happen", "Phishing - But my ads matter"], correctIndex: 0,
+                explanation: "Phishing. Google Ads uses google.com and ads.google.com. Appeals are submitted in the Ads dashboard."
+            },
+            {
+                id: 82, type: "EMAIL", title: "Fake University Library Fine", simulationHTML: emailSim("library@university-library-fine.com", "student@email.com", "Library fine due", `<p>You have an unpaid library fine of $45. Pay now or your grades will be withheld:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://university-library-fine.com/pay</a></p>`),
+                options: ["Legitimate - Libraries send fine reminders", "Phishing - Unofficial domain and threat", "Legitimate - Fines are real", "Phishing - But I don't want grades withheld"], correctIndex: 1,
+                explanation: "Phishing. University services use .edu domains. Pay fines at the official library portal."
+            },
+            {
+                id: 83, type: "SMS", title: "Fake Amazon Delivery", simulationHTML: smsSim("Amazon", "1:20 PM", `Your Amazon package is held. Confirm delivery at <span class="sms-link">amazon-delivery-confirm.info</span>`),
+                options: ["Legitimate - Amazon sends delivery alerts", "Legitimate - Packages get held", "Phishing - Unofficial domain", "Phishing - But I want my package"], correctIndex: 2,
+                explanation: "Phishing. Amazon uses amazon.com. Track orders in the Amazon app."
+            },
+            {
+                id: 84, type: "EMAIL", title: "Fake Investment Opportunity", simulationHTML: emailSim("invest@crypto-invest-pro.com", "user@email.com", "Earn 30% weekly returns guaranteed", `<p>Dear Investor,</p><p style="margin-top:10px">Invest with CryptoInvestPro and earn 30% weekly returns guaranteed. Minimum: $500</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://crypto-invest-pro.com/start</a></p>`),
+                options: ["Legitimate - Investments can be highly profitable", "Legitimate - Crypto is volatile but profitable", "Phishing - But the numbers look amazing", "Phishing - Guaranteed high returns = scam"], correctIndex: 3,
+                explanation: "Investment fraud. 'Guaranteed' high returns are mathematically impossible. This is a Ponzi scheme."
+            },
+            {
+                id: 85, type: "EMAIL", title: "Fake Tenant Notice", simulationHTML: emailSim("landlord@rental-property-alert.com", "tenant@email.com", "Change of bank account for rent", `<p>Hi,</p><p style="margin-top:10px">I changed banks. Please send this month's rent to the new account below.</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://rental-property-alert.com/new-account</a></p>`),
+                options: ["Phishing - Verify change of bank details in person", "Legitimate - Landlords change banks", "Legitimate - Emails can be from landlord", "Phishing - But it looks like my landlord"], correctIndex: 0,
+                explanation: "Phishing (BEC). Fraudsters impersonate landlords to divert rent. Always verify bank changes via a phone call."
+            },
+            {
+                id: 86, type: "SMS", title: "Fake Bank Activation", simulationHTML: smsSim("UBL", "10:40 AM", `Your UBL account is inactive. Activate at <span class="sms-link">ubl-activate.pk</span> with your card details.`),
+                options: ["Legitimate - Banks send activation links", "Phishing - Unofficial domain and card detail request", "Legitimate - SMS shows UBL", "Phishing - But I need my account active"], correctIndex: 1,
+                explanation: "Phishing. UBL uses ubl.com.pk. Card activation happens at branches or via official app."
+            },
+            {
+                id: 87, type: "EMAIL", title: "Fake Zoom Annual Discount", simulationHTML: emailSim("offers@zoom-annual-offer.com", "user@email.com", "70% off Zoom annual plan", `<p>Limited time! Get 70% off Zoom annual plan. Pay now:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://zoom-annual-offer.com/pay</a></p>`),
+                options: ["Legitimate - Zoom gives discounts", "Legitimate - 70% off is possible", "Phishing - Unofficial domain and too-good offer", "Phishing - But the deal is great"], correctIndex: 2,
+                explanation: "Phishing. Zoom uses zoom.us. Fake discount pages harvest payment info."
+            },
+            {
+                id: 88, type: "WEB", title: "Fake Google Play Purchase", simulationHTML: webSim("https://play.google-purchase-verify.com/confirm", `<div style="text-align:center"><h2>Google Play</h2><p style="margin:15px">Confirm your purchase of $49.99</p><input placeholder="Google password" type="password" style="padding:10px;width:80%;margin-bottom:10px;border:1px solid #ccc"><br><button style="background:#0f9d58;color:white;padding:10px 30px;border:none;border-radius:4px">Confirm</button></div>`),
+                options: ["Legitimate - Google Play confirms purchases", "Legitimate - Google charges via password", "Phishing - But I might have bought something", "Phishing - Unofficial domain"], correctIndex: 3,
+                explanation: "Phishing. Google Play uses play.google.com. Google never asks for password confirmation via third-party domains."
+            },
+            {
+                id: 89, type: "EMAIL", title: "Fake Legal Notice", simulationHTML: emailSim("legal@court-notice-online.com", "user@email.com", "Court notice - Case #8845", `<p>Dear Citizen,</p><p style="margin-top:10px">A case has been filed against you. Read the notice:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://court-notice-online.com/view/8845.pdf</a></p>`),
+                options: ["Phishing - Unofficial domain and fear tactic", "Legitimate - Courts send notices", "Legitimate - Legal cases exist", "Phishing - But I need to know the case"], correctIndex: 0,
+                explanation: "Phishing. Legal notices come via registered mail or in person. Random domains with 'PDF links' install malware."
+            },
+            {
+                id: 90, type: "SMS", title: "Fake Job Offer", simulationHTML: smsSim("+92 320 4445556", "8:00 PM", `Part-time job! Earn Rs. 3,000/day. WhatsApp 0320-4445556 to start. Registration fee Rs. 500.`),
+                options: ["Legitimate - Part-time jobs exist", "Phishing - Registration fee upfront = scam", "Legitimate - Amount is small", "Phishing - But the daily pay is good"], correctIndex: 1,
+                explanation: "Job scam. Never pay for a job. Legitimate employers pay you, not vice versa."
+            },
+            {
+                id: 91, type: "EMAIL", title: "Fake Bank Statement", simulationHTML: emailSim("statements@secure-bank-statement.com", "user@email.com", "Your monthly statement is ready", `<p>Your account statement is ready. View and verify:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://secure-bank-statement.com/view</a></p>`),
+                options: ["Legitimate - Banks send statements", "Legitimate - Statements are monthly", "Phishing - Unofficial domain", "Phishing - But I want to check"], correctIndex: 2,
+                explanation: "Phishing. Statements are viewable in the bank's app or official portal, never via emailed links."
+            },
+            {
+                id: 92, type: "SMS", title: "Fake Tax Refund SMS", simulationHTML: smsSim("FBR", "11:20 AM", `FBR: Your tax refund of Rs. 18,500 is ready. Provide bank details at <span class="sms-link">fbr-refund-verify.com</span>`),
+                options: ["Legitimate - FBR sends refund alerts", "Legitimate - Refunds are processed", "Phishing - But I want my refund", "Phishing - Unofficial domain"], correctIndex: 3,
+                explanation: "Phishing. FBR uses fbr.gov.pk. Refunds process automatically to your registered bank account."
+            },
+            {
+                id: 93, type: "EMAIL", title: "Fake Microsoft Azure Bill", simulationHTML: emailSim("billing@azure-billing-alert.com", "user@email.com", "Your Azure subscription payment failed", `<p>Azure payment failed. Update card:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://azure-billing-alert.com/update</a></p>`),
+                options: ["Phishing - Unofficial domain", "Legitimate - Microsoft sends billing alerts", "Legitimate - Azure bills exist", "Phishing - But my services might shut down"], correctIndex: 0,
+                explanation: "Phishing. Microsoft Azure uses azure.microsoft.com and microsoft.com. Never update payment via emailed links."
+            },
+            {
+                id: 94, type: "EMAIL", title: "Fake Office 365 Doc Share", simulationHTML: emailSim("sharepoint@office365-doc-share.com", "user@company.com", "Shared: Q4_Report.xlsx", `<p>A document has been shared with you via SharePoint:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://office365-doc-share.com/view/Q4_Report.xlsx</a></p>`),
+                options: ["Legitimate - SharePoint shares files", "Phishing - Unofficial domain", "Legitimate - Office documents are common", "Phishing - But the report is important"], correctIndex: 1,
+                explanation: "Phishing. SharePoint uses sharepoint.com. Fake share links harvest Microsoft credentials."
+            },
+            {
+                id: 95, type: "SMS", title: "Fake Bank SMS OTP", simulationHTML: smsSim("+92 340 1234567", "2:50 AM", `Your OTP is 884521. Reply to this SMS with the code to verify your account.`),
+                options: ["Legitimate - Banks ask for OTP via SMS reply", "Legitimate - OTP is standard", "Phishing - Banks never ask for OTP reply", "Phishing - But it's late and urgent"], correctIndex: 2,
+                explanation: "Phishing. Banks don't ask for OTP via reply SMS. Unusual time-of-day (2:50 AM) is also a red flag."
+            },
+            {
+                id: 96, type: "EMAIL", title: "Fake Bank Card Verification", simulationHTML: emailSim("verify@card-verify-online.com", "user@email.com", "Verify your card to keep it active", `<p>Dear Customer,</p><p style="margin-top:10px">Verify your card details to keep it active:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://card-verify-online.com/verify</a></p>`),
+                options: ["Legitimate - Banks require verification", "Legitimate - Cards need verification", "Phishing - But I don't want my card blocked", "Phishing - Unofficial domain and card harvesting"], correctIndex: 3,
+                explanation: "Phishing. Banks never ask for full card details via email. This steals card number, CVV, and PIN."
+            },
+            {
+                id: 97, type: "EMAIL", title: "Fake PayPal Limited Account", simulationHTML: emailSim("service@paypal-account-limited.com", "user@email.com", "Your PayPal account is limited", `<p>Your PayPal account has been limited due to unusual activity. Restore access:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://paypal-account-limited.com/restore</a></p>`),
+                options: ["Phishing - Unofficial domain", "Legitimate - PayPal limits accounts", "Legitimate - Limitations happen", "Phishing - But I need my account"], correctIndex: 0,
+                explanation: "Phishing. PayPal uses paypal.com. Always log in directly at paypal.com to check account status."
+            },
+            {
+                id: 98, type: "WEB", title: "Fake Bitcoin Wallet", simulationHTML: webSim("https://blockchain-wallet-login.info/signin", `<div style="text-align:center"><h2>Blockchain Wallet</h2><p style="margin:15px">Enter your 12-word recovery phrase</p><textarea placeholder="word1 word2 word3..." style="width:80%;padding:10px;height:80px;border:1px solid #ccc;border-radius:4px"></textarea><br><button style="background:#0070ba;color:white;padding:10px 30px;border:none;border-radius:4px;margin-top:10px">Restore Wallet</button></div>`),
+                options: ["Legitimate - Wallets need recovery phrases", "Phishing - No legitimate site asks for recovery phrase", "Legitimate - It's blockchain branded", "Phishing - But I need to restore my wallet"], correctIndex: 1,
+                explanation: "Crypto phishing. Recovery phrases should NEVER be entered on websites. Anyone with it can drain your wallet."
+            },
+            {
+                id: 99, type: "EMAIL", title: "Fake COVID Relief Fund", simulationHTML: emailSim("relief@covid-fund-pk.com", "user@email.com", "COVID relief fund Rs. 12,000 approved", `<p>Dear Citizen,</p><p style="margin-top:10px">Your COVID relief fund of Rs. 12,000 is approved. Submit bank details:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://covid-fund-pk.com/submit</a></p>`),
+                options: ["Legitimate - Government relief funds are real", "Legitimate - Relief was provided", "Phishing - Unofficial domain and bank detail request", "Phishing - But I could use the money"], correctIndex: 2,
+                explanation: "Phishing. Government relief programs use official gov.pk portals. Bank details are collected via BISP/Ehsaas centers, not emails."
+            },
+            {
+                id: 100, type: "EMAIL", title: "Fake Angler Phishing (Twitter Support)", simulationHTML: emailSim("support@twitter-help-verify.com", "user@email.com", "Your account needs verification", `<p>Dear User,</p><p style="margin-top:10px">Your Twitter/X account is flagged. To verify and avoid suspension, log in here:</p><p style="margin-top:10px"><a href="#" class="link-suspicious">https://twitter-help-verify.com/login</a></p>`),
+                options: ["Legitimate - Twitter sends verification notices", "Legitimate - Account flags are real", "Phishing - But I need to save my account", "Phishing - Angler phishing via fake support accounts"], correctIndex: 3,
+                explanation: "Angler phishing. Attackers pose as support on social media/email to steal credentials. X uses x.com and twitter.com domains only."
+            }
+        ];
+
+        const totalQuestions = QUESTION_BANK.length;
+        let currentIndex = 0, score = 0, selectedOption = null, answered = false;
+        const $ = id => document.getElementById(id);
+        const startScreen = $('startScreen'), quizScreen = $('quizScreen'), resultsScreen = $('resultsScreen');
+        const progressBar = $('progressBar'), progressFill = $('progressFill'), questionCounter = $('questionCounter'), scoreDisplay = $('scoreDisplay');
+        const titleText = $('titleText'), typeBadge = $('typeBadge'), simulationBox = $('simulationBox'), optionsContainer = $('optionsContainer');
+        const explanationBox = $('explanationBox'), explanationIcon = $('explanationIcon'), explanationTitle = $('explanationTitle'), explanationText = $('explanationText');
+        const submitBtn = $('submitBtn'), nextBtn = $('nextBtn'), startBtn = $('startBtn'), restartBtn = $('restartBtn');
+
+        function showScreen(s) { [startScreen, quizScreen, resultsScreen].forEach(x => x.classList.remove('active')); s.classList.add('active') }
+        function renderQuestion() {
+            answered = false; selectedOption = null;
+            const q = QUESTION_BANK[currentIndex];
+            titleText.textContent = q.title;
+            typeBadge.textContent = q.type;
+            typeBadge.className = 'badge ' + (q.type === 'EMAIL' ? 'badge-email' : q.type === 'SMS' ? 'badge-sms' : 'badge-web');
+            simulationBox.innerHTML = q.simulationHTML;
+            optionsContainer.innerHTML = q.options.map((opt, i) => { const letter = String.fromCharCode(65 + i); return `<div class="option-card" data-index="${i}"><div class="option-radio"></div><div class="option-letter">${letter}</div><div class="option-text">${opt}</div></div>` }).join('');
+            document.querySelectorAll('.option-card').forEach(card => { card.addEventListener('click', () => { if (answered) return; document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected'); selectedOption = parseInt(card.dataset.index); submitBtn.disabled = false }) });
+            explanationBox.classList.add('hidden');
+            submitBtn.classList.remove('hidden'); submitBtn.disabled = true;
+            nextBtn.classList.add('hidden');
+            questionCounter.textContent = `Question ${currentIndex + 1} of ${totalQuestions}`;
+            scoreDisplay.textContent = `${score}/${currentIndex}`;
+            progressFill.style.width = `${(currentIndex / totalQuestions) * 100}%`;
+        }
+        function submitAnswer() {
+            if (selectedOption === null || answered) return; answered = true;
+            const q = QUESTION_BANK[currentIndex];
+            document.querySelectorAll('.option-card').forEach((card, i) => { card.classList.add('disabled'); if (i === q.correctIndex) card.classList.add('correct'); if (i === selectedOption && i !== q.correctIndex) card.classList.add('incorrect') });
+            if (selectedOption === q.correctIndex) { score++; explanationBox.className = 'explanation-box correct'; explanationIcon.textContent = '✅'; explanationTitle.textContent = 'Correct!' } else { explanationBox.className = 'explanation-box incorrect'; explanationIcon.textContent = '❌'; explanationTitle.textContent = 'Incorrect' }
+            explanationText.innerHTML = q.explanation;
+            explanationBox.classList.remove('hidden');
+            submitBtn.classList.add('hidden'); nextBtn.classList.remove('hidden');
+            nextBtn.textContent = currentIndex === totalQuestions - 1 ? 'See Results →' : 'Next Question →';
+            scoreDisplay.textContent = `${score}/${currentIndex + 1}`;
+            progressFill.style.width = `${((currentIndex + 1) / totalQuestions) * 100}%`;
+        }
+        function nextQuestion() { if (currentIndex < totalQuestions - 1) { currentIndex++; renderQuestion() } else showResults() }
+        function showResults() {
+            progressBar.style.display = 'none'; showScreen(resultsScreen);
+            const accuracy = Math.round((score / totalQuestions) * 100);
+            $('finalScore').textContent = accuracy + '%';
+            $('statCorrect').textContent = score;
+            $('statIncorrect').textContent = totalQuestions - score;
+            $('statTotal').textContent = totalQuestions;
+            const circle = $('scoreCircle'); const circumference = 2 * Math.PI * 60;
+            circle.style.strokeDasharray = circumference; circle.style.strokeDashoffset = circumference - (circumference * accuracy / 100);
+            const riskAvatar = $('riskAvatar'), avatarIcon = $('avatarIcon'), riskTitle = $('riskTitle'), riskDescription = $('riskDescription');
+            if (accuracy >= 80) { riskAvatar.className = 'risk-avatar shield'; avatarIcon.textContent = '🛡️'; riskTitle.textContent = 'Cyber-Shield'; riskDescription.textContent = 'Excellent! You have a strong eye for phishing attempts. Keep practicing to stay sharp.'; circle.setAttribute('stroke', 'var(--accent-green)') }
+            else if (accuracy >= 50) { riskAvatar.className = 'risk-avatar vulnerable'; avatarIcon.textContent = '⚠️'; riskTitle.textContent = 'Vulnerable'; riskDescription.textContent = 'You caught some phishing attempts, but there is room for improvement. Review the explanations.'; circle.setAttribute('stroke', 'var(--accent-yellow)') }
+            else { riskAvatar.className = 'risk-avatar high-risk'; avatarIcon.textContent = '🚨'; riskTitle.textContent = 'High Risk'; riskDescription.textContent = 'You may be at high risk of falling for phishing. Please review the security tips and practice regularly.'; circle.setAttribute('stroke', 'var(--accent-red)') }
+            const tips = ['Never click links in unexpected emails or SMS messages.', 'Verify sender addresses carefully—look for misspellings or strange domains.', 'Banks and legitimate companies never ask for OTP, PIN, or passwords.', 'Hover over links to see the real URL before clicking.', 'Enable two-factor authentication (2FA) everywhere.', 'When in doubt, contact the organization using official contact details.', 'Only download apps from Google Play or Apple App Store.', 'Crypto recovery phrases should NEVER be typed into any website.'];
+            $('tipsList').innerHTML = tips.map(t => `<li><span class="check-icon">✔</span> ${t}</li>`).join('');
+        }
+        function restartQuiz() { currentIndex = 0; score = 0; selectedOption = null; answered = false; progressBar.style.display = 'none'; progressFill.style.width = '0%'; questionCounter.textContent = `Question 1 of ${totalQuestions}`; scoreDisplay.textContent = '0/0'; showScreen(startScreen) }
+        startBtn.addEventListener('click', () => { currentIndex = 0; score = 0; selectedOption = null; answered = false; progressBar.style.display = 'block'; showScreen(quizScreen); renderQuestion() });
+        submitBtn.addEventListener('click', submitAnswer);
+        nextBtn.addEventListener('click', nextQuestion);
+        restartBtn.addEventListener('click', restartQuiz);
+    </script>
+</body>
+
+</html>
